@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Camera, MapPin, Calendar, FileText, User, Phone, CreditCard, ChevronLeft, ShieldCheck, X } from 'lucide-react';
+import { Camera, MapPin, Calendar, FileText, User, CreditCard, ChevronLeft, ShieldCheck, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const VIETNAM_DATA: Record<string, Record<string, string[]>> = {
@@ -250,11 +250,11 @@ export default function ReportFound() {
         </div>
 
         <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 flex items-start gap-3">
-          <input 
-            type="checkbox" 
-            required 
+          <input
+            type="checkbox"
+            required
             id="consent"
-            className="mt-0.5 w-4 h-4 text-primary-600 bg-white border-gray-300 rounded focus:ring-primary-500 shrink-0" 
+            className="mt-0.5 w-4 h-4 text-primary-600 bg-white border-gray-300 rounded focus:ring-primary-500 shrink-0"
           />
           <label htmlFor="consent" className="text-sm text-gray-700 leading-snug">
             Tôi cam đoan thông tin khai báo là sự thật và đồng ý cho phép hệ thống sử dụng dữ liệu cá nhân (được bảo vệ) để phục vụ mục đích xác minh, đối sánh tài sản theo quy định pháp luật.

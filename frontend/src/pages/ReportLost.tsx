@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Camera, MapPin, Calendar, FileText, User, Phone, CreditCard, ChevronLeft, ShieldCheck, X, AlertTriangle, Search, LayoutGrid, Clock, PhoneCall } from 'lucide-react';
+import { Camera, MapPin, Calendar, FileText, User, CreditCard, ChevronLeft, ShieldCheck, X, AlertTriangle, Search, LayoutGrid, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const VIETNAM_DATA: Record<string, Record<string, string[]>> = {
@@ -39,7 +39,7 @@ export default function ReportLost() {
   const [province, setProvince] = useState('');
   const [district, setDistrict] = useState('');
   const [ward, setWard] = useState('');
-  const [images, setImages] = useState<{file: File, url: string}[]>([]);
+  const [images, setImages] = useState<{ file: File, url: string }[]>([]);
 
   const districts = useMemo(() => province ? Object.keys(VIETNAM_DATA[province]) : [], [province]);
   const wards = useMemo(() => district ? VIETNAM_DATA[province][district] : [], [province, district]);
@@ -72,10 +72,10 @@ export default function ReportLost() {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      navigate('/success', { 
-        state: { 
-          code: 'TM-' + Math.floor(Math.random() * 1000000).toString().padStart(6, '0') 
-        } 
+      navigate('/success', {
+        state: {
+          code: 'TM-' + Math.floor(Math.random() * 1000000).toString().padStart(6, '0')
+        }
       });
     }, 1500);
   };
@@ -123,8 +123,8 @@ export default function ReportLost() {
               <input type="text" value={searchKeyword} onChange={(e) => setSearchKeyword(e.target.value)} placeholder="Nhập từ khóa..." className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-primary-500 transition-all text-base max-w-full box-border" />
             </div>
 
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={loading}
               className="w-full mt-4 bg-primary-600 hover:bg-primary-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary-500/30 transition-all flex items-center justify-center gap-2 active:scale-[0.98]"
             >
@@ -142,14 +142,14 @@ export default function ReportLost() {
       {step === 'results' && (
         <div className="animate-in slide-in-from-right-4 duration-300">
           <p className="text-sm font-medium text-gray-500 mb-4 flex items-center gap-2">
-            <LayoutGrid className="w-4 h-4" /> 
+            <LayoutGrid className="w-4 h-4" />
             Tìm thấy <span className="font-bold text-gray-900">{MOCK_RESULTS.length}</span> kết quả nghi ngờ phù hợp
           </p>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
             {MOCK_RESULTS.map(item => (
-              <div 
-                key={item.id} 
+              <div
+                key={item.id}
                 onClick={() => setSelectedItem(item)}
                 className="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all cursor-pointer group flex flex-col"
               >
@@ -175,7 +175,7 @@ export default function ReportLost() {
           <div className="bg-gray-50 rounded-2xl p-6 text-center border border-gray-200">
             <h4 className="font-bold text-gray-800 mb-2">Không tìm thấy tài sản của bạn?</h4>
             <p className="text-sm text-gray-500 mb-4">Bạn có thể tạo hồ sơ báo mất để hệ thống tự động thông báo khi có người nhặt được.</p>
-            <button 
+            <button
               onClick={() => setStep('report')}
               className="bg-white text-primary-600 font-bold border border-primary-200 hover:bg-primary-50 py-3 px-6 rounded-xl transition-all shadow-sm active:scale-95"
             >
@@ -203,7 +203,7 @@ export default function ReportLost() {
               <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
                 <User className="w-5 h-5 text-green-600" /> Thông tin người khai báo
               </h3>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-gray-500 mb-1">Họ và tên</label>
@@ -224,13 +224,13 @@ export default function ReportLost() {
               <h3 className="font-semibold text-primary-700 mb-4 flex items-center gap-2">
                 <FileText className="w-5 h-5" /> Thông tin tài sản thất lạc
               </h3>
-              
+
               <div className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Phân loại *</label>
-                    <select 
-                      required 
+                    <select
+                      required
                       value={identifiable}
                       onChange={(e) => { setIdentifiable(e.target.value); setAssetType(''); }}
                       className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-primary-500 transition-all text-base"
@@ -317,14 +317,14 @@ export default function ReportLost() {
                 </div>
 
                 <div className="border-t border-gray-100 pt-4 space-y-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1"><MapPin className="w-4 h-4"/> Khu vực mất *</label>
-                  
+                  <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1"><MapPin className="w-4 h-4" /> Khu vực mất *</label>
+
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <select required value={province} onChange={(e) => { setProvince(e.target.value); setDistrict(''); setWard(''); }} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-primary-500 text-base">
                       <option value="">Tỉnh/Thành phố</option>
                       {Object.keys(VIETNAM_DATA).map(p => <option key={p} value={p}>{p}</option>)}
                     </select>
-                    
+
                     <select required value={district} onChange={(e) => { setDistrict(e.target.value); setWard(''); }} disabled={!province} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50 text-base">
                       <option value="">Quận/Huyện</option>
                       {districts.map(d => <option key={d} value={d}>{d}</option>)}
@@ -335,13 +335,13 @@ export default function ReportLost() {
                       {wards.map(w => <option key={w} value={w}>{w}</option>)}
                     </select>
                   </div>
-                  
+
                   <input type="text" required placeholder="Tuyến đường, công viên, nhà hàng..." className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-primary-500 transition-all text-base max-w-full box-border" />
                 </div>
 
                 <div className="border-t border-gray-100 pt-4">
                   <label className="block text-sm font-medium text-gray-700 mb-1">Hình ảnh tham khảo</label>
-                  
+
                   {images.length > 0 && (
                     <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 mb-3">
                       {images.map((img, idx) => (
@@ -373,19 +373,19 @@ export default function ReportLost() {
             </div>
 
             <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 flex items-start gap-3">
-              <input 
-                type="checkbox" 
-                required 
+              <input
+                type="checkbox"
+                required
                 id="consent"
-                className="mt-0.5 w-4 h-4 text-primary-600 bg-white border-gray-300 rounded focus:ring-primary-500 shrink-0" 
+                className="mt-0.5 w-4 h-4 text-primary-600 bg-white border-gray-300 rounded focus:ring-primary-500 shrink-0"
               />
               <label htmlFor="consent" className="text-sm text-gray-700 leading-snug">
                 Tôi cam đoan thông tin khai báo là sự thật và đồng ý cho phép hệ thống sử dụng dữ liệu cá nhân (được bảo vệ) để phục vụ mục đích xác minh, đối sánh tài sản theo quy định pháp luật.
               </label>
             </div>
 
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={loading}
               className="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary-500/30 transition-all active:scale-[0.98] disabled:opacity-70 disabled:active:scale-100 flex items-center justify-center gap-2"
             >
@@ -406,7 +406,7 @@ export default function ReportLost() {
             <div className="relative h-40">
               <img src={selectedItem.image} alt={selectedItem.title} className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
-              <button 
+              <button
                 onClick={() => setSelectedItem(null)}
                 className="absolute top-3 right-3 bg-black/40 text-white p-1.5 rounded-full hover:bg-black/60 transition"
               >
@@ -417,13 +417,13 @@ export default function ReportLost() {
                 <p className="text-xs text-gray-300 mt-1">{selectedItem.location}</p>
               </div>
             </div>
-            
+
             <div className="p-5">
               <p className="text-sm text-gray-600 mb-5 text-center">
                 Nếu bạn cho rằng đây là tài sản của mình, hãy gửi yêu cầu nhận lại. Hệ thống sẽ kết nối bạn với cơ quan công an đang bảo quản tài sản.
               </p>
-              
-              <button 
+
+              <button
                 onClick={() => {
                   setSelectedItem(null);
                   navigate('/success', { state: { code: 'YC-' + Math.floor(Math.random() * 1000000).toString().padStart(6, '0') } });
@@ -432,7 +432,7 @@ export default function ReportLost() {
               >
                 Tôi nghĩ đây là tài sản của tôi
               </button>
-              <button 
+              <button
                 onClick={() => setSelectedItem(null)}
                 className="w-full py-3 text-gray-500 font-medium text-sm hover:text-gray-800 transition"
               >

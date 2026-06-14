@@ -1,5 +1,5 @@
-import { useLocation, Link, useNavigate } from 'react-router-dom';
-import { CheckCircle2, Copy, MapPin, ArrowRight, ShieldCheck } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { CheckCircle2, Copy, MapPin, ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
 
 export default function SuccessPage() {

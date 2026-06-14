@@ -1,16 +1,20 @@
 {
   "name": "frontend",
   "private": true,
+  "homepage": "https://ngocminh-dev.github.io/lost-and-found",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.3.1",
+    "gh-pages": "^6.3.0",
     "lucide-react": "^1.18.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
