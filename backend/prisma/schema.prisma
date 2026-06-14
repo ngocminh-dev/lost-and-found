@@ -1,0 +1,211 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CITIZEN
+  OFFICER
+  AGENCY_ADMIN
+  SYSTEM_ADMIN
+}
+
+enum ReportStatus {
+  SUBMITTED_ONLINE
+  CONTACTING_REPORTER
+  WAITING_FOR_HANDOVER
+  RECEIVED_BY_AGENCY
+  NEEDS_REDACTION
+  APPROVED_PRIVATE_ONLY
+  PUBLISHED
+  CLAIM_PENDING
+  CLAIM_VERIFIED
+  RETURNED_TO_OWNER
+  EXPIRED_WAITING_LEGAL_REVIEW
+  CLOSED
+}
+
+enum ReportType {
+  FOUND_ASSET
+  LOST_ASSET
+  FOUND_PERSON
+  LOST_PERSON
+}
+
+model User {
+  id        String   @id @default(uuid())
+  phone     String   @unique
+  fullName  String
+  cccd      String?  @unique
+  address   String?
+  role      Role     @default(CITIZEN)
+  password  String?
+  agencyId  String?
+  agency    Agency?  @relation(fields: [agencyId], references: [id])
+  
+  reports   Report[] @relation("Reporter")
+  claims    Claim[]
+  auditLogs AuditLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Agency {
+  id          String   @id @default(uuid())
+  name        String
+  address     String
+  level       String   // e.g., WARD, DISTRICT, PROVINCE
+  parentCode  String?
+  
+  users       User[]
+  reports     Report[]
+  custodyRecords CustodyRecord[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Report {
+  id              String       @id @default(uuid())
+  code            String       @unique // Tracking code for citizen
+  type            ReportType
+  status          ReportStatus @default(SUBMITTED_ONLINE)
+  
+  reporterId      String
+  reporter        User         @relation("Reporter", fields: [reporterId], references: [id])
+  
+  agencyId        String?
+  agency          Agency?      @relation(fields: [agencyId], references: [id])
+  
+  assetDetails    AssetDetail?
+  personDetails   PersonDetail?
+  
+  mediaFiles      MediaFile[]
+  claims          Claim[]
+  custodyRecords  CustodyRecord[]
+  auditLogs       AuditLog[]
+
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  publicNoticeDate DateTime?   // Ngày bắt đầu niêm yết công khai
+  expirationDate   DateTime?   // Ngày hết hạn theo BLDS 2015
+}
+
+model AssetDetail {
+  id               String   @id @default(uuid())
+  reportId         String   @unique
+  report           Report   @relation(fields: [reportId], references: [id])
+  
+  category         String   // e.g., Electronics, Wallet, Vehicle
+  isIdentifiable   Boolean  @default(false)
+  brand            String?
+  color            String?
+  description      String
+  
+  // Private fields
+  serialNumber     String?
+  identityNumber   String?  // Bank card, CCCD
+  plateNumber      String?
+  
+  // Public masked fields
+  maskedSerialNumber String?
+  maskedIdentityNumber String?
+  maskedPlateNumber String?
+  
+  locationFoundLost String
+  timeFoundLost     DateTime
+  
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model PersonDetail {
+  id               String   @id @default(uuid())
+  reportId         String   @unique
+  report           Report   @relation(fields: [reportId], references: [id])
+  
+  name             String?
+  age              Int?
+  gender           String?
+  description      String
+  
+  location         String
+  time             DateTime
+  
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model MediaFile {
+  id          String   @id @default(uuid())
+  reportId    String
+  report      Report   @relation(fields: [reportId], references: [id])
+  
+  originalUrl String   // Only officers see this
+  blurredUrl  String?  // Publicly visible
+  type        String   // image, video
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Claim {
+  id          String   @id @default(uuid())
+  reportId    String
+  report      Report   @relation(fields: [reportId], references: [id])
+  
+  claimerId   String
+  claimer     User     @relation(fields: [claimerId], references: [id])
+  
+  status      String   // PENDING, VERIFIED, REJECTED
+  proofNotes  String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model CustodyRecord {
+  id          String   @id @default(uuid())
+  reportId    String
+  report      Report   @relation(fields: [reportId], references: [id])
+  
+  agencyId    String
+  agency      Agency   @relation(fields: [agencyId], references: [id])
+  
+  officerName String
+  receivedAt  DateTime
+  notes       String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id])
+  
+  reportId    String?
+  report      Report?  @relation(fields: [reportId], references: [id])
+  
+  action      String   // e.g., STATUS_CHANGE, MEDIA_BLURRED
+  details     String
+  
+  createdAt   DateTime @default(now())
+}
+
+model LegalParameter {
+  id          String   @id @default(uuid())
+  key         String   @unique
+  value       String
+  description String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
